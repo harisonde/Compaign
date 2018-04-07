@@ -6,15 +6,22 @@ contract Compaign{
         uint value;
         address reciepint;
         bool complete;
+        uint approvalCount;
+        mapping(address => bool) approvals;
     }
     
     address public manager;
     uint public minimumContribution;
-    address[] public approvers;
+    mapping(address => bool) public approvers;
     Request[] public requests;
     
     modifier onlyManager() {
         require(msg.sender == manager);
+        _;
+    }
+    
+    modifier onlyApprover(){
+        require(approvers[msg.sender] == true);
         _;
     }
   
@@ -25,18 +32,17 @@ contract Compaign{
 
     function contribute() payable public {
         require(msg.value > minimumContribution);
-        approvers.push(msg.sender);
+        approvers[msg.sender] = true;
     }
     
-    function createRequest(string desc, uint value, address _reciepint) 
-    onlyManager public {
+    function createRequest(string _desc, uint _value, address _reciepint) onlyManager public {
         Request memory request = Request({
-            description: desc, 
-            value: value,
+            description: _desc, 
+            value: _value,
             reciepint: _reciepint,
-            complete: false
+            complete: false,
+            approvalCount: 0
         });
-        
         requests.push(request);
     }
     
