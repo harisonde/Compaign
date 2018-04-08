@@ -26,8 +26,8 @@ contract Compaign{
         _;
     }
   
-    function Compaign(uint _minimumContribution) payable public{
-      manager = msg.sender;
+    function Compaign(uint _minimumContribution, address creator) payable public{
+      manager = creator;
       minimumContribution = _minimumContribution;
     }
 
@@ -63,5 +63,22 @@ contract Compaign{
          request.complete = true;
          request.reciepint.transfer(request.value);
     }
+}
+
+contract CompaignFactory{
+    address public owner;
+    address[] public deployedCompaigns;
     
+    function CompaignFactory() public{
+        owner = msg.sender;
+    }
+    
+    function createCompaign(uint minimumContribution) public{
+       address deployedCompaign = new Compaign(minimumContribution, msg.sender);
+       deployedCompaigns.push(deployedCompaign);
+    }
+    
+    function getDeployedCompaign() public view returns(address[]){
+        return deployedCompaigns;
+    }
 }
