@@ -9,23 +9,23 @@ contract Compaign{
         uint approvalCount;
         mapping(address => bool) approvals;
     }
-    
+
     address public manager;
     uint public minimumContribution;
     mapping(address => bool) public approvers;
     Request[] public requests;
     uint approversCount;
-    
+
     modifier onlyManager() {
         require(msg.sender == manager);
         _;
     }
-    
+
     modifier onlyApprover(){
         require(approvers[msg.sender] == true);
         _;
     }
-  
+
     function Compaign(uint _minimumContribution, address creator) payable public{
       manager = creator;
       minimumContribution = _minimumContribution;
@@ -36,10 +36,10 @@ contract Compaign{
         approvers[msg.sender] = true;
         approversCount++;
     }
-    
+
     function createRequest(string _desc, uint _value, address _reciepint) onlyManager public {
         Request memory request = Request({
-            description: _desc, 
+            description: _desc,
             value: _value,
             reciepint: _reciepint,
             complete: false,
@@ -47,19 +47,19 @@ contract Compaign{
         });
         requests.push(request);
     }
-    
+
     function approveRequest(uint _requestNo) onlyApprover public{
         Request storage request = requests[_requestNo];
         require(request.approvals[msg.sender] == false);
         request.approvals[msg.sender] = true;
         request.approvalCount += 1;
     }
-    
+
     function finalizeRequest(uint _requestNo) onlyManager public {
          Request storage request = requests[_requestNo];
          require(!request.complete);
          require(request.approvalCount > (approversCount / 2));
-         
+
          request.complete = true;
          request.reciepint.transfer(request.value);
     }
@@ -68,16 +68,16 @@ contract Compaign{
 contract CompaignFactory{
     address public owner;
     address[] public deployedCompaigns;
-    
+
     function CompaignFactory() public{
         owner = msg.sender;
     }
-    
+
     function createCompaign(uint minimumContribution) public{
        address deployedCompaign = new Compaign(minimumContribution, msg.sender);
        deployedCompaigns.push(deployedCompaign);
     }
-    
+
     function getDeployedCompaign() public view returns(address[]){
         return deployedCompaigns;
     }
