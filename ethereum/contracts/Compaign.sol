@@ -14,7 +14,7 @@ contract Compaign{
     uint public minimumContribution;
     mapping(address => bool) public approvers;
     Request[] public requests;
-    uint approversCount;
+    uint public approversCount;
 
     modifier onlyManager() {
         require(msg.sender == manager);
@@ -34,7 +34,7 @@ contract Compaign{
     function contribute() payable public {
         require(msg.value > minimumContribution);
         approvers[msg.sender] = true;
-        approversCount++;
+        approversCount += 1;
     }
 
     function createRequest(string _desc, uint _value, address _reciepint) onlyManager public {
