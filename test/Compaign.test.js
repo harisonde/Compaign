@@ -48,6 +48,8 @@ describe('Compaigns', () =>{
 
        const approvers = await compaign.methods.approversCount().call();
        assert.equal(1, approvers.length);
+       const approvalInd = await compaign.methods.approvers(accounts[1]).call();
+       assert.equal(true, approvalInd);
   });
 
   it('Contributing to compaign: Failure', async ()=>{
@@ -64,7 +66,7 @@ describe('Compaigns', () =>{
   });
 
  it('Create request to transfer funds', async()=> {
-  const trans =  await compaign.methods.createRequest('Getting compuetrs', 100, accounts[1]).send({
+  const trans =  await compaign.methods.createRequest('Getting compuetrs', '100', accounts[1]).send({
       from: accounts[0],
       gas: 1000000
     });
@@ -81,13 +83,13 @@ describe('Compaigns', () =>{
  it('Approve and Finalize request to transfer money', async ()=>{
    await compaign.methods.contribute().send({
        from: accounts[1],
-       value: 110,
+       value: web3.utils.toWei('10', 'ether'),
        gas:1000000
      });
 
      await compaign.methods.contribute().send({
          from: accounts[2],
-         value: 110,
+         value: web3.utils.toWei('20', 'ether'),
          gas:1000000
        });
      const contributionInd = await compaign.methods.approvers(accounts[1]).call();
@@ -95,7 +97,7 @@ describe('Compaigns', () =>{
      assert.equal(true, contributionInd);
      assert.equal(true, contributionIndTwo);
 
-  await compaign.methods.createRequest('Getting compuetrs', 100, accounts[1]).send({
+  await compaign.methods.createRequest('Getting compuetrs', web3.utils.toWei('5', 'ether'), accounts[1]).send({
        from: accounts[0],
        gas: 1000000
      });
@@ -108,21 +110,27 @@ await compaign.methods.approveRequest(0).send({
     from: accounts[2],
     gas:1000000
   });
-
    const request = await compaign.methods.requests(0).call();
    assert.equal('Getting compuetrs', request.description);
-   assert.equal('100', request.value);
+   assert.equal(web3.utils.toWei('5', 'ether'), request.value);
    assert.equal(accounts[1], request.reciepint);
    assert.equal(2, request.approvalCount);
    assert.equal(false, request.complete);
+
+   const initialBalance = await web3.eth.getBalance(accounts[1]);
 
    await compaign.methods.finalizeRequest(0).send({
      from: accounts[0],
      gas:1000000
    });
 
+   const balanceAfter = await web3.eth.getBalance(accounts[1]);
+   const diff = balanceAfter - initialBalance;
+
    const result = await compaign.methods.requests(0).call();
+
    assert.equal(true, result.complete);
+   assert.equal(diff, web3.utils.toWei('5', 'ether'));
  });
 
 });
