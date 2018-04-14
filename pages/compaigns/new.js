@@ -3,6 +3,7 @@ import Layout from '../../components/Layout';
 import { Form, Button, Input, Message } from 'semantic-ui-react';
 import factory from '../../ethereum/factory';
 import web3 from '../../ethereum/web3';
+import { Router } from '../../routes';
 
 class CompaignNew extends Component{
 
@@ -30,6 +31,7 @@ class CompaignNew extends Component{
         .send({
               from: accounts[0]
           });
+    Router.pushRoute('/');
     }
     catch(error){
        this.setState({
