@@ -63,6 +63,20 @@ contract Compaign{
          request.complete = true;
          request.reciepint.transfer(request.value);
     }
+
+    function getSummary() view public returns(uint, uint, uint, uint, address){
+        return(
+            this.balance,
+            minimumContribution,
+            requests.length,
+            approversCount,
+            manager
+        );
+    }
+
+    function getRequestCount() view public returns(uint){
+        return requests.length;
+    }
 }
 
 contract CompaignFactory{
