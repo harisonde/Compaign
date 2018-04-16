@@ -21,6 +21,7 @@ const deploy = async () => {
 
   console.log(compaignFactoryContract.interface);
   console.log('contract deployed at -', contract.options.address);
+  console.log(compaignContract.interface);
 };
 
 deploy();
