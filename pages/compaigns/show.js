@@ -3,7 +3,9 @@ import compaignCreateFunction from '../../ethereum/compaignCreate';
 import Layout from '../../components/Layout';
 import ContributeForm from '../../components/contributeForm';
 import web3 from '../../ethereum/web3';
-import { Card } from 'semantic-ui-react';
+import { Card, Grid, Button} from 'semantic-ui-react';
+import {Router} from '../../routes';
+import {Link} from '../../routes';
 
 class CompaignShow extends Component{
   static async getInitialProps(props){
@@ -15,7 +17,8 @@ class CompaignShow extends Component{
       minimumContribution: summaryObj[1],
       requests: summaryObj[2],
       approversCount: summaryObj[3],
-      manager: summaryObj[4]
+      manager: summaryObj[4],
+      address: props.query.address
     };
   }
 
@@ -60,8 +63,24 @@ class CompaignShow extends Component{
       <Layout>
         <h3>Compaign Details</h3>
         <br/>
-          {this.renderCompaign()}
-          <ContributeForm/>
+        <Grid>
+          <Grid.Row>
+              <Grid.Column width={10}>
+                {this.renderCompaign()}
+              </Grid.Column>
+              <Grid.Column width={6}>
+                  <ContributeForm address={this.props.address}/>
+              </Grid.Column>
+          </Grid.Row>
+          <Grid.Row>
+            <Grid.Column>
+              <Link route={`/compaigns/${this.props.address}/requests`}>
+                <Button primary>View Requests</Button>
+              </Link>
+            </Grid.Column>
+          </Grid.Row>
+
+        </Grid>
       </Layout>
     );
   }

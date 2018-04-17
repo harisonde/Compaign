@@ -55,7 +55,7 @@ class CompaignNew extends Component{
               labelPosition="right"
               />
         </Form.Field>
-      <Message error header="Ooops!!!" content={this.state.errorMessage} />
+      <Message error header="Oops!!!" content={this.state.errorMessage} />
       <Button loading={this.state.loading} primary>Create</Button>
       </Form>
       </Layout>
