@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Form, Input, Button, Message} from 'semantic-ui-react';
 import CompaignCreate from '../../../ethereum/compaignCreate';
 import web3 from '../../../ethereum/web3';
-import {Routes, Link} from '../../../routes';
+import {Router, Link} from '../../../routes';
 import Layout from '../../../components/Layout';
 
 class RequestNew extends Component{
@@ -20,33 +20,29 @@ class RequestNew extends Component{
 
   onSubmit = async (event) =>{
     event.preventDefault();
-    this.setState(
-      {this.state.loading: true,
-        errorMessage:''
-      });
+    this.setState({loading: true, errorMessage:''});
     const {description, value, reciepint} = this.state;
 
     try{
-      const address = await web3.eth.getAccounts();
-      const compaignObj = compaignCreate(this.props.address);
-      await compaignFC.methods.createRequest(
+      const accounts = await web3.eth.getAccounts();
+      const compaignObj = CompaignCreate(this.props.address);
+      await compaignObj.methods.createRequest(
         description,
         web3.utils.toWei(value, 'ether'),
-        reciepint).send({from:accounts[0]}
-        );
-        Routes.pushRoute(`/compaigns/${this.props.address}/requests`);
+        reciepint).send({from:accounts[0]});
+        Router.pushRoute(`/compaigns/${this.props.address}/requests`);
     }catch(error){
     this.setState({
       errorMessage: error.message
     });
     }
-    this.setState({this.state.loading: false});
+    this.setState({loading: false});
   }
   render(){
     return(
       <Layout>
       <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage}>
-        <Link route=`/compaigns/${this.props.address}/requests`>
+        <Link route={`/compaigns/${this.props.address}/requests`}>
           <a>Back</a>
         </Link>
       <h3>Create a Request!</h3>
@@ -54,15 +50,15 @@ class RequestNew extends Component{
           <label>Description</label>
           <Input
             value={this.state.description}
-            onChange={event => this.setState({this.state.description: event.target.value})}>
+            onChange={event => this.setState({description: event.target.value})}>
           </Input>
         </Form.Field>
 
         <Form.Field>
           <label>Value in ether</label>
-          <Input label="ether"
+          <Input label="ether" labelPosition="right"
             value={this.state.value}
-            onChange={event => this.setState({this.state.value: event.target.value})}>
+            onChange={event => this.setState({value: event.target.value})}>
           </Input>
         </Form.Field>
 
@@ -70,7 +66,7 @@ class RequestNew extends Component{
           <label>Reciepint</label>
           <Input
             value={this.state.reciepint}
-            onChange={event => this.setState({this.state.reciepint: event.target.value})}>
+            onChange={event => this.setState({reciepint: event.target.value})}>
           </Input>
         </Form.Field>
 

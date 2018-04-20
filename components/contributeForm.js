@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Button, Form, Input, Message} from 'semantic-ui-react';
 import CompaignCreate from '../ethereum/compaignCreate';
 import web3 from '../ethereum/web3';
+import { Router } from '../routes';
 
 class ContributeForm extends Component{
   state ={
@@ -12,15 +13,15 @@ class ContributeForm extends Component{
 
   onSubmit = async (event) => {
     event.preventDefault();
-    thi.setState({loading: true, errorMessage:''});
+    this.setState({loading: true, errorMessage:''});
     const compaignObj = CompaignCreate(this.props.address);
     try{
       const accounts = await web3.eth.getAccounts();
-      compaignObj.methods.contribute().send({
+      await compaignObj.methods.contribute().send({
           from:accounts[0],
           value:web3.utils.toWei(this.state.value, 'ether')
           });
-      Router.replaceRoute(`/compaign/${this.props.address}`);
+      Router.replaceRoute(`/compaigns/${this.props.address}`);
     }catch(error){
       this.setState({errorMessage:error.message});
     }

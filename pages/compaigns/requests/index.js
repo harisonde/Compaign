@@ -3,17 +3,17 @@ import Layout from '../../../components/Layout';
 import {Button, Table} from 'semantic-ui-react';
 import {Link} from '../../../routes';
 import CompaignCreate from '../../../ethereum/compaignCreate';
-import RequestRow from '../../.../components/RequestRow';
+import RequestRow from '../../../components/RequestRow';
 
 class RequestIndex extends Component{
   static async getInitialProps(props){
     const compaignObj = CompaignCreate(props.query.address);
     const count = await compaignObj.methods.getRequestCount().call();
-    const approversCount = await compaignObj.methods.approverCount().call();
+    const approversCount = await compaignObj.methods.approversCount().call();
 
     const requests = await Promise.all(
       Array(parseInt(count))
-      .fill
+      .fill(0)
       .map((element, index) =>{
         return compaignObj.methods.requests(index).call();
       })

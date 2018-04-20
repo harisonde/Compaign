@@ -1,4 +1,4 @@
-import React, {Component} form 'react';
+import React, {Component} from 'react';
 import {Table, Button} from 'semantic-ui-react';
 import web3 from '../ethereum/web3';
 import CompaignCreate from '../ethereum/compaignCreate';
@@ -22,7 +22,7 @@ class RequestRow extends Component{
     const {id, request, approversCount} = this.props;
 
     const readyToFinalize = request.approvalCount > approversCount / 2;
-    return(){
+    return(
       <Row disabled={request.complete} positive={readyToFinalize && !request.complete}>
         <Cell>{id}</Cell>
         <Cell>{request.description}</Cell>
@@ -41,8 +41,8 @@ class RequestRow extends Component{
           )}
         </Cell>
       </Row>
-    }
+    );
   }
 }
 
-extends default RequestRow;
+export default RequestRow;
