@@ -46,7 +46,7 @@ class CompaignShow extends Component{
       },
       {
         header: requests,
-        description: 'Request gets created to withdrwa money from compaign.These Requests need to be approved by contributer on this compaign',
+        description: 'Request gets created to withdraw money from compaign.These Requests need to be approved by contributer on this compaign',
         meta: 'Requests'
       },
 
